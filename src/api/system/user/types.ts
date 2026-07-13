@@ -20,7 +20,7 @@ export interface UserQuery extends PageQuery {
   status?: string;
   deptId?: string | number;
   roleId?: string | number;
-  userIds?:  string | number | (string | number)[] | undefined;
+  userIds?: string | number | (string | number)[] | undefined;
 }
 
 /**
@@ -28,7 +28,6 @@ export interface UserQuery extends PageQuery {
  */
 export interface UserVO extends BaseEntity {
   userId: string | number;
-  tenantId: string;
   deptId: number;
   userName: string;
   nickName: string;

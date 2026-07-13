@@ -15,7 +15,6 @@ export interface FlowTaskVO {
   id: string | number;
   createTime?: Date;
   updateTime?: Date;
-  tenantId?: string;
   definitionId?: string;
   instanceId: string;
   flowName: string;

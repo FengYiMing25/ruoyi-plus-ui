@@ -76,7 +76,6 @@ const task = ref<FlowTaskVO>({
   id: undefined,
   createTime: undefined,
   updateTime: undefined,
-  tenantId: undefined,
   definitionId: undefined,
   instanceId: undefined,
   flowName: undefined,
