@@ -49,7 +49,8 @@ export const constantRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/register',
-    component: () => import('@/views/register.vue'),
+    // 注册表单已合并到登录页，旧地址仅负责兼容跳转。
+    redirect: { path: '/login', query: { mode: 'register' } },
     hidden: true
   },
   {
@@ -92,9 +93,7 @@ export const constantRoutes: RouteRecordRaw[] = [
 ];
 
 // 动态路由，基于用户权限动态去加载
-export const dynamicRoutes: RouteRecordRaw[] = [
-
-];
+export const dynamicRoutes: RouteRecordRaw[] = [];
 
 /**
  * 创建路由

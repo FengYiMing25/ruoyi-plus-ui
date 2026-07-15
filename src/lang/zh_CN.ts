@@ -11,8 +11,27 @@ export default {
     login: '登 录',
     logging: '登 录 中...',
     code: '验证码',
+    usernamePlaceholder: '输入管理账号',
+    passwordPlaceholder: '输入账户密码',
+    codePlaceholder: '输入验证码',
+    welcomeEyebrow: 'Secure workspace / 安全工作台',
+    welcome: '欢迎回来',
+    welcomeDescription: '登录后继续管理你的业务、流程与系统资源。',
     rememberPassword: '记住我',
+    securityNote: '加密连接已启用',
+    socialLabel: '使用其他方式继续',
+    noAccount: '还没有账号？',
+    refreshCode: '刷新验证码',
+    refresh: '刷新',
     switchRegisterPage: '立即注册',
+    showcase: {
+      eyebrow: 'Built for focused operations',
+      headline: '让复杂系统，保持清晰有序。',
+      description: '统一管理权限、流程与数据，让团队专注于真正重要的决策。',
+      pointOne: '细粒度权限与组织管理',
+      pointTwo: '可追踪的业务流程',
+      pointThree: '实时系统运行状态'
+    },
     rule: {
       username: {
         required: '请输入您的账号'
@@ -34,13 +53,24 @@ export default {
   },
   // 注册页面国际化
   register: {
+    welcomeEyebrow: 'Create your workspace',
+    welcome: '创建账号',
+    welcomeDescription: '填写账户信息，开启清晰、高效的管理体验。',
     username: '用户名',
+    usernamePlaceholder: '请输入用户名',
     password: '密码',
+    passwordPlaceholder: '请输入密码',
     confirmPassword: '确认密码',
+    confirmPasswordPlaceholder: '请再次输入密码',
     register: '注 册',
     registering: '注 册 中...',
     registerSuccess: '恭喜你，您的账号 {username} 注册成功！',
     code: '验证码',
+    codePlaceholder: '请输入验证码',
+    refreshCode: '刷新验证码',
+    refresh: '刷新',
+    hasAccount: '已经有账号？',
+    systemPrompt: '系统提示',
     switchLoginPage: '使用已有账户登录',
     rule: {
       username: {

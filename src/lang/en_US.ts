@@ -11,8 +11,27 @@ export default {
     login: 'Login',
     logging: 'Logging...',
     code: 'Verification Code',
+    usernamePlaceholder: 'Enter administrator account',
+    passwordPlaceholder: 'Enter your password',
+    codePlaceholder: 'Enter verification code',
+    welcomeEyebrow: 'Secure workspace',
+    welcome: 'Welcome back',
+    welcomeDescription: 'Sign in to manage your operations, workflows, and system resources.',
     rememberPassword: 'Remember me',
+    securityNote: 'Encrypted connection enabled',
+    socialLabel: 'Or continue with',
+    noAccount: 'New to the platform?',
+    refreshCode: 'Refresh verification code',
+    refresh: 'Refresh',
     switchRegisterPage: 'Sign up now',
+    showcase: {
+      eyebrow: 'Built for focused operations',
+      headline: 'Keep complex systems clear and composed.',
+      description: 'Bring permissions, workflows, and data into one operational workspace built for decisive teams.',
+      pointOne: 'Granular access and organization',
+      pointTwo: 'Traceable business workflows',
+      pointThree: 'Live system visibility'
+    },
     rule: {
       username: {
         required: 'Please enter your account'
@@ -34,13 +53,24 @@ export default {
   },
   // 注册页面国际化
   register: {
+    welcomeEyebrow: 'Create your workspace',
+    welcome: 'Create account',
+    welcomeDescription: 'Set up your account and begin a clear, focused management experience.',
     username: 'Username',
+    usernamePlaceholder: 'Enter your username',
     password: 'Password',
+    passwordPlaceholder: 'Enter your password',
     confirmPassword: 'Confirm Password',
+    confirmPasswordPlaceholder: 'Enter your password again',
     register: 'Register',
     registering: 'Registering...',
     registerSuccess: 'Congratulations, your {username} account has been registered!',
     code: 'Verification Code',
+    codePlaceholder: 'Enter verification code',
+    refreshCode: 'Refresh verification code',
+    refresh: 'Refresh',
+    hasAccount: 'Already have an account?',
+    systemPrompt: 'System prompt',
     switchLoginPage: 'Log in with an existing account',
     rule: {
       username: {
