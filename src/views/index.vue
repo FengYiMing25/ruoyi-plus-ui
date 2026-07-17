@@ -1,16 +1,27 @@
 <script setup name="Index" lang="ts">
 import { computed, useTemplateRef } from 'vue';
+import CarShowcaseSection from './home/components/CarShowcaseSection.vue';
 import { useHomeMotion } from './home/composables/useHomeMotion';
 
+// 首页章节的数据结构同时服务于横向能力卡片和下方架构列表，避免两处文案失去同步。
 interface SystemChapter {
+  /** 两位章节序号，用于卡片、目录和视觉图形中的统一编号。 */
   number: string;
+  /** 英文能力代码，用作章节眉题和架构列表标题。 */
   code: string;
+  /** 中文能力名称，也是章节卡片的主标题。 */
   title: string;
+  /** 主标题上方的简短叙事句。 */
   subtitle: string;
+  /** 章节正文说明，在卡片与架构列表中复用。 */
   description: string;
+  /** 当前能力对应的展示指标值。 */
   metric: string;
+  /** 指标值下方的英文单位或含义。 */
   metricLabel: string;
+  /** 章节主题色标识，对应 chapter-card 的 tone 修饰类。 */
   tone: 'lime' | 'violet' | 'paper' | 'orange' | 'blue';
+  /** 与该能力关联的技术栈标签。 */
   tags: string[];
 }
 
@@ -73,11 +84,12 @@ const chapters: SystemChapter[] = [
   }
 ];
 
+// 根节点既是 GSAP 选择器的作用域，也是首页内滚动定位和指针交互的边界。
 const homeRoot = useTemplateRef<HTMLElement>('homeRoot');
 const heroTitle = 'RUOYI PLUS';
 // 拆分首屏标题，供 GSAP 执行逐字遮罩入场。
 const heroCharacters = computed(() => [...heroTitle]);
-
+// 页面组件只绑定事件，具体 Tween、Timeline 与 ScrollTrigger 生命周期统一由 composable 管理。
 const { handleHeroPointer, resetHeroPointer, scrollToChapters } = useHomeMotion(homeRoot);
 
 // 沿用原首页的外部项目入口，不改变链接目标。
@@ -85,6 +97,7 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
 </script>
 
 <template>
+  <!-- 首页根容器转发鼠标位置，离开区域时触发首屏光球复位。 -->
   <div ref="homeRoot" class="home-lab" @pointermove="handleHeroPointer" @pointerleave="resetHeroPointer">
     <!-- 页面内导航采用参考站的差值混合效果，滚动到不同底色时自动反转。 -->
     <nav class="home-lab__nav" aria-label="首页章节导航">
@@ -95,12 +108,14 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
 
     <!-- 首屏使用超大排版、轨道和数据刻度建立沉浸式系统实验室氛围。 -->
     <section class="hero-section">
+      <!-- 噪点、光球和轨道均为装饰层，不承载业务文本。 -->
       <div class="hero-section__noise"></div>
       <div class="hero-section__cursor-orb"></div>
       <div class="hero-section__orbit hero-section__orbit--outer"></div>
       <div class="hero-section__orbit hero-section__orbit--inner"></div>
       <div class="hero-section__satellite"></div>
 
+      <!-- 左右角标提供版本、坐标和状态信息，形成仪表界面的边缘层次。 -->
       <div class="hero-section__meta hero-section__meta--left">
         <span>VERSION 5.6.2</span>
         <span>35°41′N / 139°41′E</span>
@@ -110,6 +125,7 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
         <span>SCROLL TO EXPLORE ↓</span>
       </div>
 
+      <!-- 首屏中心内容拆成字符遮罩，GSAP 可分别控制每个字母的入场时序。 -->
       <div class="hero-section__center">
         <p class="hero-section__kicker" data-hero-enter>FIVE SYSTEM TALES OF BEING</p>
         <h1 :aria-label="heroTitle">
@@ -124,6 +140,7 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
         </div>
       </div>
 
+      <!-- 首屏行动按钮直接滚动到五章节区域，同时兼容减少动态效果模式。 -->
       <button class="hero-section__scroll" type="button" data-hero-enter @click="scrollToChapters">
         <span>ENTER THE SYSTEM</span>
         <i>↓</i>
@@ -133,17 +150,22 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
     <!-- 宣言段通过逐词滚动揭示，模拟参考站的大字号叙事停顿。 -->
     <section class="manifesto-section">
       <div class="manifesto-section__index">00 — INTRODUCTION</div>
+      <!-- data-manifesto-word 作为独立 ScrollTrigger 的动画锚点。 -->
       <p class="manifesto-section__lead">
         <span data-manifesto-word>从五个维度，</span>
         <span data-manifesto-word>重新理解</span>
         <span data-manifesto-word>一个系统</span>
         <span data-manifesto-word>如何运行。</span>
       </p>
+      <!-- 小字号说明承担章节收束，避免大标题后直接切入 3D 场景。 -->
       <div class="manifesto-section__foot">
         <span>BUILT FOR FOCUSED OPERATIONS</span>
         <p>我们不只是呈现功能，而是让每个模块在滚动中形成一段可以被感知的系统故事。</p>
       </div>
     </section>
+
+    <!-- 3D 车型章节整体封装，首页只负责组合各叙事区块。 -->
+    <CarShowcaseSection />
 
     <!-- 纵向滚动驱动横向章节轨道，是参考站最核心的滚动叙事关系。 -->
     <section id="system-chapters" class="chapters-section">
@@ -152,12 +174,14 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
         <span>DRAGGED BY VERTICAL SCROLL</span>
       </div>
       <div class="chapters-track">
+        <!-- 同一份章节数据渲染五张全屏卡片，tone 映射各卡片的主题配色。 -->
         <article v-for="chapter in chapters" :key="chapter.number" class="chapter-card" :class="`chapter-card--${chapter.tone}`">
           <header class="chapter-card__header">
             <span>{{ chapter.number }}</span>
             <span>{{ chapter.code }}</span>
           </header>
 
+          <!-- 卡片中央图形只负责视觉运动，隐藏于辅助技术以免产生无意义朗读。 -->
           <div class="chapter-card__visual" aria-hidden="true">
             <div class="chapter-card__grid"></div>
             <div class="chapter-card__ring chapter-card__ring--one"></div>
@@ -166,6 +190,7 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
             <strong>{{ chapter.number }}</strong>
           </div>
 
+          <!-- 正文与指标分开布局，便于横向滚动时维持稳定的信息层级。 -->
           <div class="chapter-card__body">
             <p>{{ chapter.subtitle }}</p>
             <h2>{{ chapter.title }}</h2>
@@ -194,6 +219,7 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
       </aside>
 
       <div class="architecture-section__list">
+        <!-- 再次复用章节数据，以纵向目录形式总结前面的横向叙事。 -->
         <article v-for="chapter in chapters" :key="chapter.code" class="architecture-row" data-architecture-row>
           <span>{{ chapter.number }}</span>
           <h3>{{ chapter.code }}</h3>
@@ -227,6 +253,7 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
       </div>
       <div class="home-footer__bottom">
         <span>© 2026 RUOYI-VUE-PLUS</span>
+        <!-- 回到顶部使用根元素定位，避免依赖全局 window.scrollTo。 -->
         <button type="button" @click="homeRoot?.scrollIntoView({ behavior: 'smooth' })">BACK TO TOP ↑</button>
       </div>
     </footer>
@@ -236,6 +263,7 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
 <style lang="scss" scoped>
 /* 首页通过负空间、超大字号与高对比色块复现参考站的编辑式视觉语言。 */
 .home-lab {
+  /* 主题色集中为 CSS 变量，章节色块和交互态可共享同一套视觉语义。 */
   --ink: #090909;
   --paper: #eee9dc;
   --lime: #ccff33;
@@ -248,6 +276,7 @@ const goTarget = (url: string) => window.open(url, '_blank', 'noopener,noreferre
   font-family: Arial, 'PingFang SC', sans-serif;
 }
 
+/* 首页内部按钮统一清除浏览器默认外观，具体反馈由各区块样式定义。 */
 button {
   padding: 0;
   border: 0;
@@ -257,6 +286,7 @@ button {
   font: inherit;
 }
 
+/* 顶部导航使用 difference 混合模式，在深浅章节之间自动保持对比度。 */
 .home-lab__nav {
   position: absolute;
   z-index: 20;
@@ -281,6 +311,7 @@ button {
   justify-self: end;
 }
 
+/* 首屏建立全视口舞台，超出区域的轨道与光晕由容器裁切。 */
 .hero-section {
   position: relative;
   display: grid;
@@ -292,6 +323,7 @@ button {
   place-items: center;
 }
 
+/* 噪点纹理在首屏与章节卡片之间复用，保持整页材质一致。 */
 .hero-section__noise,
 .chapter-card__grid {
   position: absolute;
@@ -303,6 +335,7 @@ button {
   mask-image: radial-gradient(circle at center, #000, transparent 75%);
 }
 
+/* 指针光球由 GSAP quickTo 更新 left/top，模糊后形成柔和跟随光。 */
 .hero-section__cursor-orb {
   position: absolute;
   z-index: -1;
@@ -319,6 +352,7 @@ button {
   will-change: left, top;
 }
 
+/* 两层轨道只使用 transform 做持续旋转，避免影响文档布局。 */
 .hero-section__orbit {
   position: absolute;
   z-index: -1;
@@ -352,6 +386,7 @@ button {
   top: 50%;
 }
 
+/* 首屏元数据固定在左右侧边，竖排文字模拟实验设备刻度。 */
 .hero-section__meta {
   position: absolute;
   z-index: 2;
@@ -374,6 +409,7 @@ button {
   text-align: right;
 }
 
+/* 中央内容覆盖在装饰轨道之上，并由滚动视差整体移动。 */
 .hero-section__center {
   position: relative;
   z-index: 2;
@@ -389,6 +425,7 @@ button {
   letter-spacing: 0.22em;
 }
 
+/* 主标题使用视口单位控制尺度，在常见桌面比例下保持满宽冲击力。 */
 .hero-section h1 {
   margin: 0;
   font-size: clamp(78px, 13vw, 210px);
@@ -399,6 +436,7 @@ button {
   white-space: nowrap;
 }
 
+/* 外层遮罩裁切字母位移，内层字母交给 GSAP 执行弹出动画。 */
 .hero-letter-mask,
 .hero-letter {
   display: inline-block;
@@ -420,6 +458,7 @@ button {
   width: 0.24em;
 }
 
+/* 标题下方摘要使用三列网格，把平台说明夹在两侧英文标签之间。 */
 .hero-section__abstract {
   display: grid;
   width: min(680px, calc(100% - 44px));
@@ -443,6 +482,7 @@ button {
   letter-spacing: 0.12em;
 }
 
+/* 首屏滚动入口保持在安全底部区域，并通过圆形箭头强化可点击性。 */
 .hero-section__scroll {
   position: absolute;
   z-index: 3;
@@ -465,6 +505,7 @@ button {
   place-items: center;
 }
 
+/* 宣言区用大面积留白承接首屏，并为逐句滚动揭示预留纵向距离。 */
 .manifesto-section {
   position: relative;
   min-height: 115vh;
@@ -481,6 +522,7 @@ button {
   letter-spacing: 0.12em;
 }
 
+/* 关键句分行排布，每个 span 都是独立的滚动动画目标。 */
 .manifesto-section__lead {
   max-width: 1240px;
   margin: 16vh 0 20vh;
@@ -508,6 +550,7 @@ button {
   text-align: right;
 }
 
+/* 章节脚注采用左右分栏，补充产品定位与设计说明。 */
 .manifesto-section__foot {
   display: grid;
   align-items: start;
@@ -524,6 +567,7 @@ button {
   line-height: 1.6;
 }
 
+/* 五章节容器在 ScrollTrigger 激活时固定，内部轨道再执行横向位移。 */
 .chapters-section {
   position: relative;
   height: calc(100vh - 84px);
@@ -544,6 +588,7 @@ button {
   color: rgba(255, 255, 255, 0.55);
 }
 
+/* 轨道宽度由五张视口卡片自然撑开，GSAP 根据 scrollWidth 计算终点。 */
 .chapters-track {
   display: flex;
   width: max-content;
@@ -551,6 +596,7 @@ button {
   will-change: transform;
 }
 
+/* 每张能力卡片占满一个视口，并通过 tone 修饰类替换主题色。 */
 .chapter-card {
   --chapter-bg: #ccff33;
   --chapter-ink: #090909;
@@ -567,6 +613,7 @@ button {
   grid-template-rows: auto 1fr auto;
 }
 
+/* 章节主题色只覆盖变量和前景色，结构样式保持完全复用。 */
 .chapter-card--violet {
   --chapter-bg: #7757ff;
   --chapter-ink: #fff;
@@ -596,6 +643,7 @@ button {
   letter-spacing: 0.1em;
 }
 
+/* 中央抽象图形由网格、双环与脉冲点组成，跟随横向滚动产生旋转。 */
 .chapter-card__visual {
   position: absolute;
   width: min(48vw, 650px);
@@ -640,6 +688,7 @@ button {
   transform: translate(-50%, -50%);
 }
 
+/* 章节正文保持在左下视觉区域，与中央图形和右下指标形成三角构图。 */
 .chapter-card__body {
   position: relative;
   z-index: 2;
@@ -666,6 +715,7 @@ button {
   line-height: 1.6;
 }
 
+/* 页脚分别承载技术标签和量化指标，使用自动列宽避免内容挤压。 */
 .chapter-card__footer {
   align-items: flex-end;
 }
@@ -694,6 +744,7 @@ button {
   letter-spacing: -0.05em;
 }
 
+/* 架构总览恢复纵向阅读，左侧粘性摘要与右侧条目并行。 */
 .architecture-section {
   display: grid;
   min-height: 120vh;
@@ -723,6 +774,7 @@ button {
   line-height: 1.4;
 }
 
+/* 每个架构条目复用章节文案，并作为 ScrollTrigger.batch 的进入目标。 */
 .architecture-row {
   display: grid;
   min-height: 170px;
@@ -754,6 +806,7 @@ button {
   font-style: normal;
 }
 
+/* 跑马灯隐藏超出内容，轨道复制两组文本后平移 50% 实现无缝循环。 */
 .marquee-section {
   overflow: hidden;
   padding: 30px 0 36px;
@@ -778,6 +831,7 @@ button {
   font-style: normal;
 }
 
+/* 页脚切换为纯黑背景，用巨型标题和反色按钮形成明确的视觉终点。 */
 .home-footer {
   min-height: 100vh;
   padding: 28px 3vw 24px;
@@ -836,6 +890,7 @@ button {
   letter-spacing: 0.1em;
 }
 
+/* 平板布局降低字号并收紧卡片内边距，仍保留横向章节叙事。 */
 @media (max-width: 900px) {
   .hero-section {
     min-height: 680px;
@@ -868,6 +923,7 @@ button {
   }
 }
 
+/* 手机布局将多列信息改为单列，优先保证标题和操作目标可读。 */
 @media (max-width: 600px) {
   .home-lab__nav {
     padding: 16px 14px;
@@ -949,6 +1005,7 @@ button {
   }
 }
 
+/* 系统要求减少动态效果时关闭平滑滚动，GSAP 同步跳过主要运动。 */
 @media (prefers-reduced-motion: reduce) {
   .hero-letter,
   [data-manifesto-word],

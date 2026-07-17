@@ -5,9 +5,11 @@ import { onBeforeUnmount, onMounted, type Ref } from 'vue';
 // ScrollTrigger 必须在创建任何滚动时间线前完成注册。
 gsap.registerPlugin(ScrollTrigger);
 
+// 每次创建动画前读取系统偏好，使按钮滚动和高频指针交互也遵循无障碍设置。
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export function useHomeMotion(rootRef: Ref<HTMLElement | null>) {
+  // context 负责首页范围内动画的统一回收，orbSetters 缓存高频鼠标跟随函数。
   let context: gsap.Context | undefined;
   let orbSetters: { left: gsap.QuickToFunc; top: gsap.QuickToFunc } | undefined;
 
@@ -43,12 +45,15 @@ export function useHomeMotion(rootRef: Ref<HTMLElement | null>) {
     rootRef.value?.querySelector('#system-chapters')?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
   };
 
+  // DOM 挂载完成后再创建动画，确保所有章节选择器和尺寸计算都可用。
   onMounted(() => {
     const root = rootRef.value;
     if (!root) return;
 
+    // gsap.context 将字符串选择器限制在首页根节点，避免影响其他路由的同名类。
     context = gsap.context(() => {
       const media = gsap.matchMedia();
+      // matchMedia 让完整动画和减少动态效果模式使用互斥配置。
       media.add(
         {
           reduceMotion: '(prefers-reduced-motion: reduce)',
@@ -58,9 +63,12 @@ export function useHomeMotion(rootRef: Ref<HTMLElement | null>) {
           const { reduceMotion } = matchContext.conditions as { reduceMotion: boolean };
           if (reduceMotion) {
             // 减少动态效果时显示所有内容，并跳过固定和横向滚动转换。
-            gsap.set(root.querySelectorAll('[data-hero-enter], .hero-letter, [data-manifesto-word], [data-architecture-row], [data-footer-title]'), {
-              clearProps: 'all'
-            });
+            gsap.set(
+              root.querySelectorAll(
+                '[data-hero-enter], .hero-letter, [data-manifesto-word], [data-car-enter], .car-showcase__title-letter, [data-architecture-row], [data-footer-title]'
+              ),
+              { clearProps: 'all' }
+            );
             return;
           }
 
@@ -107,6 +115,27 @@ export function useHomeMotion(rootRef: Ref<HTMLElement | null>) {
             });
           });
 
+          // 汽车章节进入视口时先揭示标题，再让数据和控制面板从两侧落位。
+          gsap
+            .timeline({
+              scrollTrigger: { trigger: '.car-showcase', start: 'top 72%', toggleActions: 'play none none reverse' },
+              defaults: { ease: 'power4.out' }
+            })
+            .from('.car-showcase__title-letter', { yPercent: 120, rotation: 5, autoAlpha: 0, duration: 0.8, stagger: 0.04 })
+            .from('[data-car-enter]', { y: 28, autoAlpha: 0, duration: 0.62, stagger: 0.08 }, '-=0.45')
+            .from('.paint-panel', { x: 38, autoAlpha: 0, duration: 0.68 }, '-=0.48')
+            .from('.camera-dock', { y: 30, autoAlpha: 0, duration: 0.62 }, '-=0.54');
+
+          // 车型背景字和环形刻度使用不同滚动速度，形成类似汽车官网的空间视差。
+          gsap.to('.car-showcase__title', {
+            yPercent: 28,
+            autoAlpha: 0.35,
+            ease: 'none',
+            scrollTrigger: { trigger: '.car-showcase', start: 'top bottom', end: 'bottom top', scrub: 0.8 }
+          });
+          gsap.to('.car-stage__orbit--outer', { rotation: '+=360', duration: 72, repeat: -1, ease: 'none' });
+          gsap.to('.car-stage__orbit--middle', { rotation: '-=360', duration: 50, repeat: -1, ease: 'none' });
+
           const chaptersSection = root.querySelector<HTMLElement>('.chapters-section');
           const track = root.querySelector<HTMLElement>('.chapters-track');
           if (chaptersSection && track) {
@@ -151,6 +180,7 @@ export function useHomeMotion(rootRef: Ref<HTMLElement | null>) {
           // 跑马灯使用无限 transform 循环，与滚动触发动画相互独立。
           gsap.to('.marquee-track', { xPercent: -50, duration: 28, repeat: -1, ease: 'none' });
 
+          // 页脚标题进入视口后揭示，向上回滚时恢复初始状态。
           gsap.from('[data-footer-title]', {
             y: 100,
             autoAlpha: 0,
@@ -172,5 +202,6 @@ export function useHomeMotion(rootRef: Ref<HTMLElement | null>) {
     ScrollTrigger.getById('home-horizontal-chapters')?.kill();
   });
 
+  // 页面层只需要绑定这三个交互入口，所有动画实例均留在 composable 内部。
   return { handleHeroPointer, resetHeroPointer, scrollToChapters };
 }
