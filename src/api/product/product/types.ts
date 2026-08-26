@@ -45,6 +45,7 @@ export interface ProductCreateForm {
   productName: string;
   categoryId?: string | number;
   sellingPoint?: string;
+  detailContent?: string;
   mainImageId?: string;
   unit: string;
   sortNum: number;

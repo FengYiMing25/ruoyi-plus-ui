@@ -30,6 +30,7 @@ const initialForm = (): ProductCreateForm => ({
   productName: '',
   categoryId: undefined,
   sellingPoint: '',
+  detailContent: '',
   mainImageId: undefined,
   unit: '件',
   sortNum: 0,
@@ -176,6 +177,11 @@ const submit = async () => {
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :rows="2" maxlength="500" show-word-limit placeholder="请输入备注" />
+      </el-form-item>
+
+      <el-divider content-position="left">商品详情</el-divider>
+      <el-form-item label="详情内容" prop="detailContent">
+        <editor v-model="form.detailContent" :height="260" :min-height="260" />
       </el-form-item>
 
       <el-divider content-position="left">规格与库存</el-divider>
